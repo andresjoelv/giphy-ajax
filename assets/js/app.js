@@ -65,10 +65,14 @@ $(function() {
         }).then((response) => { 
             console.log(response); 
             for(var i = 0; i < response.data.length; i++){
-                var gifDiv = $("<div>");
+                var gifDiv = $("<div class='download'>");
+                var overlay = $('<div class="overlay">');
 
                 var rating = response.data[i].rating;
 
+                var a = $("<a href='#'>");
+                var iLink = $("<i class='fas fa-download'>");
+                a.append(iLink);
                 var p = $("<p>").text("Rating: " + rating);
 
                 var gifImage = $("<img>");
@@ -84,14 +88,15 @@ $(function() {
 
                 gifImage.addClass("play");
 
-                gifDiv.append(p);
+                overlay.append(p);
+                overlay.append(a);
                 gifDiv.append(gifImage);
+                gifDiv.append(overlay);
 
                 
                 $("#giphy-list").prepend(gifDiv);
             }
         });
-
 
     }
 
