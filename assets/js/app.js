@@ -5,12 +5,14 @@ $(function() {
     // api call
     const api_key = "4i2cKQvU5RTeTcXWvIdf172GA46qQCaV";
     let url = "https://api.giphy.com/v1/gifs/search"; //host+path
+    var limit = 10;
 
     //var isPLayingGif = false;
     var still = "";
     var lastbtn = "";
     var gifUrls = [];
     var gifUrlsStill = [];
+
 
     /*
     * display buttons
@@ -43,6 +45,34 @@ $(function() {
     });
 
     /*
+        *   add ten
+        */
+    $("#add-ten").on("click", function(e){
+        e.preventDefault();
+        
+        limit = 20;
+
+         // reset arrays
+        gifUrls = [];
+        gifUrlsStill = [];
+ 
+        $("#giphy-list").empty();
+
+        var game = $(this).attr("data-name");
+        
+        url = "https://api.giphy.com/v1/gifs/search";
+
+        url += "?" + $.param({
+            'q' : game,
+            'api_key' : api_key,
+            'limit' : limit
+        });
+        makeApiCall(game);
+        limit = 10;
+    });
+
+
+    /*
     *   display gifs onto screen
     */
     function displayGifs(){
@@ -50,6 +80,7 @@ $(function() {
         gifUrls = [];
         gifUrlsStill = [];
 
+        $("#giphy-list").empty();
         var game = $(this).attr("data-name");
 
         url = "https://api.giphy.com/v1/gifs/search";
@@ -57,23 +88,33 @@ $(function() {
         url += "?" + $.param({
             'q' : game,
             'api_key' : api_key,
-            'limit' : "10"
+            'limit' : limit
         });
+
+        makeApiCall(game);
+    }
+
+    function makeApiCall(game){
         $.ajax({
             url: url,
             method: "GET"
         }).then((response) => { 
             console.log(response); 
             for(var i = 0; i < response.data.length; i++){
-                var gifDiv = $("<div class='download'>");
+                var panel = $("<div class='panel'>");
                 var overlay = $('<div class="overlay">');
 
                 var rating = response.data[i].rating;
+                var p = $("<p>").text("Rating: " + rating);
 
-                var a = $("<a href='#'>");
+                var urlGif = response.data[i].images.fixed_height.url;
+                var lastIndexOfDot = urlGif.lastIndexOf("/");
+                var fileToDownload = urlGif.slice(lastIndexOfDot+1, urlGif.length);
+                console.log(fileToDownload);
+
+                var a = $(`<a href='${fileToDownload}' download>`);
                 var iLink = $("<i class='fas fa-download'>");
                 a.append(iLink);
-                var p = $("<p>").text("Rating: " + rating);
 
                 var gifImage = $("<img>");
                 gifImage.attr("src", response.data[i].images.fixed_height_still.url);
@@ -88,16 +129,16 @@ $(function() {
 
                 gifImage.addClass("play");
 
-                overlay.append(p);
                 overlay.append(a);
-                gifDiv.append(gifImage);
-                gifDiv.append(overlay);
+                panel.append(gifImage);
+                panel.append(p);
+                panel.append(overlay);
 
-                
-                $("#giphy-list").prepend(gifDiv);
+                $("#giphy-list").prepend(panel);
+
+                $("#add-ten").attr("data-name", game);
             }
         });
-
     }
 
     /*

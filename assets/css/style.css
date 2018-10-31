@@ -3,10 +3,9 @@
 }
 
 body {
-    margin: 0;
+    
     font-family: Arial;
     background: #000;
-    
 }
 
 .game {
@@ -14,64 +13,55 @@ body {
     background: blue;
 }
 
-/*
- * download icon
- */
-.download {
-    position: relative;
-}
-
-/* .overlay {
-	padding-top: 7px;	
-	padding-right: 7px;
-	position: absolute;
-	right: 0;
-	top: 0;
-    display: none;
-    font-size: 30px;
-    background-color: #008CBA;
-    height: 100%;
-    transition: .5s ease;
-    width: 0;
-    overflow: hidden;
-} */
-
-.overlay {
-    position: absolute;
-    bottom: 0;
-    left: 100%;
-    right: 0;
-    background-color: #000;
-    opacity: 0.8;
-    overflow: hidden;
-    width: 0;
-    height: 100%;
-    transition: .5s ease;
-    color: white;
-    font-weight: bold;
-}
-
-.download:hover .overlay {
-    width: 100%;
-    display: block;
-    left: 70%;
-}
-
-.overlay a {
-    color: #ffffff;
-}
-
-.forty{
-    height: 40%;
-}
-.sixty{
-    height: 60%;
-}
-
-#giphy-list {
+.panels {
     display: -ms-flexbox; /* IE10 */
     display: flex;
     -ms-flex-wrap: wrap; /* IE10 */
     flex-wrap: wrap;
     padding: 0 4px;
+    color: #fff;
+}
+
+/* .panel {
+    flex: 1;
+} */
+
+/*
+ * download
+ */
+.panel {
+	position: relative;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.panel:hover .overlay {
+	display: block;
+}
+
+.overlay {
+	padding-top: 7px;	
+	padding-right: 7px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	display: none;
+}
+
+.overlay a {
+	color: #1971ff;
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+    .panels {
+        padding: 40px;
+    }
+
+    .panels .panel {
+        width: 100%;
+    }
+    .panels .panel img {
+        width: 100%;
+    }
 }
