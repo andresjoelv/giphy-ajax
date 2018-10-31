@@ -94,6 +94,9 @@ $(function() {
         makeApiCall(game);
     }
 
+    var favorites = [];
+    var favUrls = [];
+
     function makeApiCall(game){
         $.ajax({
             url: url,
@@ -103,18 +106,19 @@ $(function() {
             for(var i = 0; i < response.data.length; i++){
                 var panel = $("<div class='panel'>");
                 var overlay = $('<div class="overlay">');
+                //var favorite = $('<div class="favorite">');
 
                 var rating = response.data[i].rating;
                 var p = $("<p>").text("Rating: " + rating);
 
-                var urlGif = response.data[i].images.fixed_height.url;
-                var lastIndexOfDot = urlGif.lastIndexOf("/");
-                var fileToDownload = urlGif.slice(lastIndexOfDot+1, urlGif.length);
-                console.log(fileToDownload);
-
-                var a = $(`<a href='${fileToDownload}' download>`);
+                var a = $(`<a href='${response.data[i].images.fixed_height.url}' download>`);
                 var iLink = $("<i class='fas fa-download'>");
                 a.append(iLink);
+
+                // fav section
+                var favGif = $("<div class='list'>")
+                var favGifSpan = $(`<spani class='favme fas fa-heart' data-id="${i}" data-url='${response.data[i].images.fixed_height.url}'></span>`)
+                favGif.append(favGifSpan);
 
                 var gifImage = $("<img>");
                 gifImage.attr("src", response.data[i].images.fixed_height_still.url);
@@ -130,16 +134,25 @@ $(function() {
                 gifImage.addClass("play");
 
                 overlay.append(a);
+                //overlay.append(favGif);
                 panel.append(gifImage);
                 panel.append(p);
                 panel.append(overlay);
+                panel.append(favGif);
 
                 $("#giphy-list").prepend(panel);
 
                 $("#add-ten").attr("data-name", game);
             }
+            // get favorites from local storage or empty array
+            favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                // add class 'fav' to each favorite
+            favorites.forEach(function(favorite) {
+                $(`[data-id='${favorite}']`).css("color", "red");
+            });
         });
     }
+    
 
     /*
     * Image manipulation to play Gifs
@@ -160,7 +173,42 @@ $(function() {
         
     }
 
+   
+
+    /*
+     * favMe
+     */
+
+    function favMe(){
+        
+        localStorage.clear();
+
+        var id = $(this).attr('data-id'),
+            favUrl = $(this).attr("data-url"),
+            index = favorites.indexOf(id);
+
+        console.log(parseInt(index));
+
+        // return if target doesn't have an id (shouldn't happen)
+        if (!id) return;
+        // item is not favorite
+        if (index == -1) {
+            favorites.push(id);
+            favUrls.push(favUrl);
+            $(this).css('color', 'red');
+        // item is already favorite
+        } else {
+            favorites.splice(index, 1);
+            $(this).css("color", 'white');
+        }
+        // store array in local storage
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
     $(document).on("click", ".game", displayGifs);
     $(document).on("click", ".play", playGif);
+
+    $(document).on("click", ".favme", favMe);
+
     renderButtons();
 });

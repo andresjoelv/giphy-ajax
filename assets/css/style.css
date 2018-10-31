@@ -52,6 +52,25 @@ body {
 	color: #1971ff;
 }
 
+
+/* */
+
+.panel:hover .list {
+	display: block;
+}
+
+.list {
+    padding-top: 7px;	
+	padding-right: 7px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+}
+
+
+/* end fav section */
+
 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
     .panels {
